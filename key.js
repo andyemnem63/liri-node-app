@@ -37,5 +37,16 @@ exports.twitter = client.get('statuses/user_timeline', params, function(error, t
         }
 });
 
+//Spotify
+//=================================================================================
+var spotify = require('spotify');
 
+spotify.search({type:'track', query: 'I want it that way'}, function(err, data){
+        if(!err){
+            console.log(data['tracks']['items'][0]['album']['artists']);
+        }
+        else{
+          console.log(false);
+        }
+});
 

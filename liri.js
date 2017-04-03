@@ -4,6 +4,7 @@
 var spotify = require('spotify');
 var twitter = require('twitter');
 var key = require('./key');
+var request = require('request');
 
 var userInput = process.argv[2];
 var userChoice = process.argv[3];
@@ -69,8 +70,37 @@ function spotifyData(){
 }
 
 function movieData(){
-
-  console.log(true);
+    request('http://www.omdbapi.com/?t=' + 'spiderman',function(error, response, body){
+        if (!error && response.statusCode == 200) {
+          var parsedData = JSON.parse(body);
+          
+          var movieTitle = parsedData['Title'];
+          var movieYear = parsedData['Year'];
+          var movieRating = parsedData['imdbRating'];
+          var movieCountry = parsedData['Country'];
+          var movieLang = parsedData['Language'];
+          var moviePlot = parsedData['Plot'];
+          var movieActor = parsedData['Actors'];
+          var movieTomatoValue = parsedData['Ratings'][1]['Value'];
+          var movieTomato = parsedData['Ratings'][1]['Source'];
+          
+          //Movie info
+          console.log(movieTitle);
+          console.log(movieYear);
+          console.log(movieRating);
+          console.log(movieCountry);
+          console.log(movieLang);
+          console.log(moviePlot);
+          console.log(movieActor);
+          //console.log(movieTomato + ' ' + movieTomatoValue);
+          // //Testing
+          //console.log(parsedData);
+          console.log(parsedData);
+        }
+        else if(error){
+          console.log('no movies');
+        }
+    });
 }
 /*Main
 ==============================================================*/

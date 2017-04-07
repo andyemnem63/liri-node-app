@@ -21,6 +21,7 @@ var movieActor;
 var tomatoRating;
 var tomatoURL;
 
+var parsedData;
 /*Functions
 ==============================================================*/
 
@@ -58,11 +59,27 @@ function twitterData(){
 }
 
 function spotifyData(){
-      
-        if(process.argv.length >=4){
-
-            spotify.search({type:'track', query: userChoice}, function(err, data){
+        //If the user inputs a song....
+        if(process.argv.length >=4 || typeof userChoice === 'string') {
+              //Display spotify song
+              spotify.search({type:'track', query: userChoice}, function(err, data){
+                    
+                    if(!err) {
+                      displaySpotify(data);
+                    }
+                 
+                    else {
+                      throw err;
+                    }
+              });
+        }
+        //If user doesn't input a song....
+        else if(process.argv.length < 4) {
+              //Displays default song data
+              spotify.search({type:'track', query: "The Sign Ace of Base" }, function(err, data){
+                  //if there is no error then...
                   if(!err) {
+                    //Display spotify data to terminal
                     displaySpotify(data);
                   }
                
@@ -70,17 +87,6 @@ function spotifyData(){
                     throw err;
                   }
             });
-        }
-        else if(process.argv.length < 4){
-            spotify.search({type:'track', query: "The Sign Ace of Base" }, function(err, data){
-                if(!err) {
-                  displaySpotify(data);
-                }
-             
-                else {
-                  throw err;
-                }
-          });
         }
 }
 
@@ -98,10 +104,13 @@ function displaySpotify(data){
 }
 
 function movieData(){
-    if(process.argv.length >=4)    
+    if(process.argv.length >=4 || typeof userChoice === 'string')    
+        
         request('http://www.omdbapi.com/?t=' + userChoice +'&tomatoes=true',function(error, response, body){
+           
             if (!error && response.statusCode == 200) {
-                  var parsedData = JSON.parse(body);
+                  
+                  parsedData = JSON.parse(body);
                   displayMovie(parsedData);
               
             }
@@ -110,9 +119,11 @@ function movieData(){
             }
         });
     else if(process.argv.length < 4){
+        
         request('http://www.omdbapi.com/?t=' + 'Mr. Nobody' +'&tomatoes=true',function(error, response, body){
+            
             if (!error && response.statusCode == 200) {
-                  var parsedData = JSON.parse(body);
+                  parsedData = JSON.parse(body);
                   displayMovie(parsedData);
               
             }
@@ -195,7 +206,6 @@ switch(userInput){
       case "movie-this":
           movieData();
           break;
-
 
       default:
           console.log('Error!!');
